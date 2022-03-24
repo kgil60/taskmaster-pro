@@ -178,6 +178,70 @@ $("#remove-tasks").on("click", function() {
   saveTasks();
 });
 
+$(".card .list-group").sortable({
+  connectWith: $(".card .list-group"),
+  scroll: false,
+  tolerance: "pointer",
+  helper: "clone",
+  activate: function(e) {
+    console.log("activate", this);
+  },
+  deactivate: function(e) {
+    console.log("deactivate", this);
+  },
+  over: function(e) {
+    console.log("over", e.target);
+  }, 
+  out: function(e) {
+    console.log("out", e.target);
+  },
+  update: function(e) {
+    // array to store task data
+    let tempArr = [];
+
+    // loop over current set of chilren in sortable list
+    $(this).children().each(function() {
+      let text = $(this)
+        .find("p")
+        .text()
+        .trim();
+      
+      let date = $(this)
+        .find("span")
+        .text()
+        .trim();
+
+      tempArr.push({
+        text: text,
+        date: date
+      })
+    })
+    // trim down list id to match object property
+    let arrName = $(this)
+    .attr("id")
+    .replace("list-", "");
+  
+    tasks[arrName] = tempArr;
+    saveTasks();
+
+    console.log(tempArr)
+  }
+})
+
+$("#trash").droppable({
+  accept: ".card .list-group-item",
+  tolerance: "touch",
+  drop: function(e, ui) {
+    ui.draggable.remove();
+  },
+  over: function(e, ui) {
+    console.log("over")
+  },
+  out: function(e, ui) {
+    console.log("out");
+  }
+})
+
 // load tasks for the first time
 loadTasks();
 
