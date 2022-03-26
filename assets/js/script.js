@@ -160,7 +160,7 @@ $("#task-form-modal").on("shown.bs.modal", function() {
 });
 
 // save button in modal was clicked
-$("#task-form-modal .btn-primary").click(function() {
+$("#task-form-modal .btn-save").click(function() {
   // get form values
   var taskText = $("#modalTaskDescription").val();
   var taskDate = $("#modalDueDate").val();
@@ -196,16 +196,18 @@ $(".card .list-group").sortable({
   tolerance: "pointer",
   helper: "clone",
   activate: function(e) {
-    console.log("activate", this);
+    $(this).addClass("dropover");
+    $(".bottom-trash").addClass("bottom-trash-drag");
   },
   deactivate: function(e) {
-    console.log("deactivate", this);
+    $(this).removeClass("dropover");
+    $(".bottom-trash").removeClass("bottom-trash-drag");
   },
   over: function(e) {
-    console.log("over", e.target);
+    $(this).addClass("dropover-active");
   }, 
   out: function(e) {
-    console.log("out", e.target);
+    $(this).removeClass("dropover-active");
   },
   update: function(e) {
     // array to store task data
@@ -247,10 +249,10 @@ $("#trash").droppable({
     ui.draggable.remove();
   },
   over: function(e, ui) {
-    console.log("over")
+    $(".bottom-trash").addClass("bottom-trash-active");
   },
   out: function(e, ui) {
-    console.log("out");
+    $(".bottom-trash").removeClass("bottom-trash-active");
   }
 })
 
@@ -276,6 +278,12 @@ function auditTask(taskEl) {
     $(taskEl).addClass("list-group-item-warning");
   }
 }
+
+setInterval(function() {
+  $(".card .list-group-item").each(function(index, el) {
+    auditTask(el);
+  })
+}, 1800000);
 
 // load tasks for the first time
 loadTasks();
